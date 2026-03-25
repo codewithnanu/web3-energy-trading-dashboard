@@ -1,0 +1,24 @@
+.vercel
+
+# Dependencies
+node_modules/
+blockchain/node_modules/
+
+# Build output
+dist/
+
+# Environment files
+.env
+.env.local
+blockchain/.env
+
+# Vite
+.vite/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Hardhat artifacts (auto-generated)
+blockchain/artifacts/
+blockchain/cache/
