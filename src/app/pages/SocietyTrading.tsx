@@ -148,9 +148,12 @@ export default function SocietyTrading() {
     try {
       setCurrentStep("Uploading listing details to IPFS...");
       const ipfsHash = await uploadToIPFS({
-        societyName: mySocietyName,
-        timeSlot:    formData.timeSlot,
-        createdAt:   new Date().toISOString(),
+        societyName:  mySocietyName,
+        energyAmount: parseInt(formData.energyAmount),
+        pricePerUnit: formData.pricePerUnit,
+        listingType:  formData.listingTypeStr,
+        timeSlot:     formData.timeSlot,
+        createdAt:    new Date().toISOString(),
       });
 
       // listingType: 0 = FOR_MEMBERS, 1 = FOR_SOCIETIES
