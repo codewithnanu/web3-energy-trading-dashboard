@@ -194,9 +194,19 @@ export default function SocietyTrading() {
     }
     setIsBuying(true);
     try {
+      setCurrentStep("Uploading trade details to IPFS...");
+      const ipfsHash = await uploadToIPFS({
+        type:           "society_buy",
+        listingId:      selectedListing.id,
+        buyerSociety:   mySocietyName,
+        sellerSociety:  selectedListing.societyName,
+        kWh,
+        pricePerKwh:    selectedListing.price,
+        totalPaid:      (kWh * selectedListing.price).toFixed(6),
+        timestamp:      new Date().toISOString(),
+      });
       setCurrentStep("Sending ETH... Check MetaMask");
-      // Pass the raw Wei price — no floating point conversion needed
-      await societyBuyEnergy(selectedListing.id, kWh, selectedListing.pricePerKwhWei);
+      await societyBuyEnergy(selectedListing.id, kWh, selectedListing.pricePerKwhWei, ipfsHash);
       toast.success("Energy purchased!", {
         description: `Bought ${kWh} kWh from ${selectedListing.societyName}`,
       });

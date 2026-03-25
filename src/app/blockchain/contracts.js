@@ -221,7 +221,7 @@ export async function getActiveListingsForSocieties() {
 // listingId:      which listing to buy from
 // kWh:            how many kWh to buy
 // pricePerKwhWei: price per kWh in Wei (BigInt from the listing, no floating point issues)
-export async function memberBuyEnergy(listingId, kWh, pricePerKwhWei) {
+export async function memberBuyEnergy(listingId, kWh, pricePerKwhWei, ipfsHash) {
   const contract = await getEnergyTradeContract(true);
 
   // Multiply kWh by price in Wei to get total cost in Wei
@@ -230,17 +230,17 @@ export async function memberBuyEnergy(listingId, kWh, pricePerKwhWei) {
 
   // value: totalCostWei sends ETH along with the function call
   // This is the ETH that goes to the society
-  const tx = await contract.memberBuyEnergy(listingId, kWh, { value: totalCostWei, gasLimit: 500000 });
+  const tx = await contract.memberBuyEnergy(listingId, kWh, ipfsHash, { value: totalCostWei, gasLimit: 500000 });
   await tx.wait(1);
   return tx;
 }
 
 // societyBuyEnergy — society purchases energy from another society
 // pricePerKwhWei: price per kWh in Wei (BigInt from the listing)
-export async function societyBuyEnergy(listingId, kWh, pricePerKwhWei) {
+export async function societyBuyEnergy(listingId, kWh, pricePerKwhWei, ipfsHash) {
   const contract = await getEnergyTradeContract(true);
   const totalCostWei = BigInt(kWh) * BigInt(pricePerKwhWei.toString());
-  const tx = await contract.societyBuyEnergy(listingId, kWh, { value: totalCostWei, gasLimit: 500000 });
+  const tx = await contract.societyBuyEnergy(listingId, kWh, ipfsHash, { value: totalCostWei, gasLimit: 500000 });
   await tx.wait(1);
   return tx;
 }

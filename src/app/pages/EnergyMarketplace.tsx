@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { ethers } from "ethers";
 import { useAuth } from "../contexts/AuthContext";
 import { useWallet } from "../contexts/WalletContext";
-import { fetchFromIPFS } from "../blockchain/ipfs";
+import { fetchFromIPFS, uploadToIPFS } from "../blockchain/ipfs";
 import { getActiveListingsForMembers, memberBuyEnergy } from "../blockchain/contracts";
 
 export default function EnergyMarketplace() {
@@ -98,8 +98,18 @@ export default function EnergyMarketplace() {
     }
     setIsProcessing(true);
     try {
-      // Pass the raw Wei price from blockchain — avoids floating point issues
-      await memberBuyEnergy(selectedListing.id, kWh, selectedListing.pricePerKwhWei);
+      const ipfsHash = await uploadToIPFS({
+        type:        "member_buy",
+        listingId:   selectedListing.id,
+        buyerWallet: user?.walletAddress,
+        society:     selectedListing.society,
+        kWh,
+        pricePerKwh: selectedListing.price,
+        totalPaid:   (kWh * selectedListing.price).toFixed(6),
+        timeSlot:    selectedListing.timeSlot,
+        timestamp:   new Date().toISOString(),
+      });
+      await memberBuyEnergy(selectedListing.id, kWh, selectedListing.pricePerKwhWei, ipfsHash);
       setModalOpen(false);
       toast.success("Transaction Successful!", {
         description: `You purchased ${kWh} kWh from ${selectedListing.society}`,

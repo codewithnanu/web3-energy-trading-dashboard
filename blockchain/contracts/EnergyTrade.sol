@@ -45,6 +45,7 @@ contract EnergyTrade {
         uint256 totalPaid;
         bool    isMemberTrade;
         uint256 timestamp;
+        string  ipfsHash;
     }
 
     // ─── STORAGE ───
@@ -113,7 +114,7 @@ contract EnergyTrade {
     // "payable" is a special keyword — it means this function can RECEIVE ETH
     // When member calls this they also send ETH along with the call
     // msg.value is the amount of ETH (in Wei) they sent
-    function memberBuyEnergy(uint256 listingId, uint256 kWh) external payable {
+    function memberBuyEnergy(uint256 listingId, uint256 kWh, string memory ipfsHash) external payable {
 
         // ─── VALIDATIONS ───
 
@@ -176,7 +177,8 @@ contract EnergyTrade {
             kWhPurchased:   kWh,
             totalPaid:      msg.value,
             isMemberTrade:  true,
-            timestamp:      block.timestamp
+            timestamp:      block.timestamp,
+            ipfsHash:       ipfsHash
         });
 
         // Add trade ID to buyer's history and society's history
@@ -199,7 +201,7 @@ contract EnergyTrade {
     // listingId → which listing they are buying from
     // kWh       → how many kWh they want to buy
     // payable   → this function receives ETH
-    function societyBuyEnergy(uint256 listingId, uint256 kWh) external payable {
+    function societyBuyEnergy(uint256 listingId, uint256 kWh, string memory ipfsHash) external payable {
 
         // ─── VALIDATIONS ───
 
@@ -251,7 +253,8 @@ contract EnergyTrade {
             kWhPurchased:    kWh,
             totalPaid:       msg.value,
             isMemberTrade:   false,
-            timestamp:       block.timestamp
+            timestamp:       block.timestamp,
+            ipfsHash:        ipfsHash
         });
 
         tradesByWallet[msg.sender].push(tradeCount);
